@@ -66,6 +66,9 @@ sc = SparkContext(conf=conf)
 filepath = 'u.item'
 mapMovieName = loadMovieNames(filepath)
 
+# broadcast the movie_name dictionary to each slave node
+sc.broadcast(mapMovieName)
+
 # load the data into RDD
 data = sc.textFile('u.data')
 
