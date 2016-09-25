@@ -59,8 +59,8 @@ def getOtherMovie((gievenMovie, entry)):
         return movie1
          
 # main program
-conf=SparkConf().setMaster('local[*]').setAppName('FindSimilarMovie')
-sc=SparkContext(conf=conf)
+conf = SparkConf().setMaster('local[*]').setAppName('FindSimilarMovie')
+sc = SparkContext(conf=conf)
 
 # the file path to map movie id to movie name
 filepath = 'u.item'
@@ -73,25 +73,25 @@ data = sc.textFile('u.data')
 RDD1 = data.map(f_step1)
 
 # step 2: self-join --> (user1, ((m1, r1), (m2,r2)))
-RDD2 = RDD1.join(RDD1)
+RDD1 = RDD1.join(RDD1)
 
 # step 3: remove the duplate pairs, f_step3() return a boolean variable
-RDD3 = RDD2.filter(f_step3)
+RDD1 = RDD1.filter(f_step3)
 
 # step 4: make pair --> ((m1,m2), (r1,r2))
-RDD4 = RDD3.map(lambda (x, y): ((y[0][0], y[1][0]) ,(y[0][1], y[1][1])) )
+RDD1 = RDD1.map(lambda (x, y): ((y[0][0], y[1][0]) ,(y[0][1], y[1][1])) )
 
 #step 5: groupByKey (using mapValue() to convert the value to a list)-->((m1,m2), [(r11,r21),(r12,r22),(r13, r23)])
-RDD5 = RDD4.groupByKey().mapValues(lambda x: list(x))
+RDD1 = RDD1.groupByKey().mapValues(lambda x: list(x))
 
 # step 6: calculate the similarity for a pair of movies --> ((m1,m2),(coorelation_coefficient, number_of_ratingPairs))
-RDD6 = RDD5.mapValues(f_step6).cache() # cache this RDD because it will be used again
+RDD6 = RDD1.mapValues(f_step6).cache() # cache this RDD because it will be used again
 
 # find the similar movies for a given a moviw id
-movie_watched=1267
+movie_watched = 1267
 
 # find the top-k similar movies
-k=10
+k = 10
 similarMovies = RDD6.filter(lambda x: movie_watched in x[0] and x[1][0] > 0.5 and x[1][1] > 20).sortBy(lambda x: x[1][0], ascending=False).take(k)
 
 # print the result using movie IDs
@@ -104,7 +104,7 @@ for item in similarMovies:
     print '%s with similarity score of %f and rating occurances of %d.' % (mapMovieName[getOtherMovie((movie_watched,item))], item[1][0], item[1][1])
 
 # put the results into numpy array and save it into text
-result=np.array([[ x[0][0],x[0][1],x[1][0],x[1][1] ] for x in similarMovies])
+result = np.array([[ x[0][0],x[0][1],x[1][0],x[1][1] ] for x in similarMovies])
 np.savetxt('output_find_movies.txt', result)
 
 sc.stop()
