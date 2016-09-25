@@ -8,5 +8,4 @@ Dataset:
 u.DATA: contains (user_id, movie_id, rating, time_stamp)
 u.ITEM: contains movie_id and movie_name
 
-To run the program:
-# spark-submit movie_remendation_based_on_similarities.py
+To run the program: #spark-submit movie_remendation_based_on_similarities.py
