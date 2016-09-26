@@ -12,6 +12,8 @@ u.ITEM: contains movie_id and movie_name
 
 To run the program: #spark-submit movie_remendation_based_on_similarities.py
 
+
+
 ** movie_remendation_using_ALS.py
 
 This program aims to recommend the movies to a user based on the ratings that the user has made.
