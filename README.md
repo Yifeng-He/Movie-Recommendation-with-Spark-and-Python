@@ -1,4 +1,5 @@
 # Movie-Recommendation-with-Spark-and-Python
+This project aims to recommend movies to a user based on the movies that have been watched.
 
 # movie_remendation_based_on_similarities.py
 
