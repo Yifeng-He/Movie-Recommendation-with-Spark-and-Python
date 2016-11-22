@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Created on Fri Sep 16 16:18:21 2016
-
-@author: yifeng
+This is a Python script to be run in Amazon EMR cluster.
 """
 
 from pyspark import SparkConf, SparkContext
@@ -16,7 +13,8 @@ lines=sc.textFile("s3://yifengsparkdata/Book.txt")
 
 # processing pipeline
 # using regular expression '\W+' to extract only words
-word_counts_RDD=lines.flatMap(lambda x: re.split('\W+', x.lower())).map(lambda x: (x,1)).reduceByKey(lambda x,y: x+y).map(lambda (x,y):(y,x)).sortByKey()
+word_counts_RDD=lines.flatMap(lambda x: re.split('\W+', x.lower())).map(lambda x: (x,1))
+    .reduceByKey(lambda x,y: x+y).map(lambda (x,y):(y,x)).sortByKey()
 
 # the list
 word_counts = word_counts_RDD.collect()
